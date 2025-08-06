@@ -1,0 +1,132 @@
+{
+  "name": "(tpl) Automated High-Risk Account Response",
+  "description": "Take account actions automatically in response to higher risk accounts",
+  "type": "SYSTEM_CONFIGURATION",
+  "category": "ATTACK_SURFACE_RISK_MANAGEMENT",
+  "source_id": "TM_0015",
+  "workflow": {
+    "trigger_3cd213cce1bf468b817f53f09aeca166": {
+      "id": "trigger_3cd213cce1bf468b817f53f09aeca166",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "risk_event"
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_32b4ab8fc330499db76e1e02e4a30096"
+          }
+        ]
+      }
+    },
+    "target_32b4ab8fc330499db76e1e02e4a30096": {
+      "id": "target_32b4ab8fc330499db76e1e02e4a30096",
+      "type": "target",
+      "actionType": "ACCOUNT_EXPOSURE_RISK_EVENT",
+      "properties": {
+        "lastPeriodInDays": 1
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_3cd213cce1bf468b817f53f09aeca166"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_2b6f2956c5924f23b0ca46f8aa2ef30c"
+          }
+        ]
+      }
+    },
+    "condition_2b6f2956c5924f23b0ca46f8aa2ef30c": {
+      "id": "condition_2b6f2956c5924f23b0ca46f8aa2ef30c",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_32b4ab8fc330499db76e1e02e4a30096",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "riskScore",
+                  "value": 71
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_32b4ab8fc330499db76e1e02e4a30096"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_d458f7eff8454d0db01031e40a5b7e58"
+          }
+        ]
+      }
+    },
+    "action_d458f7eff8454d0db01031e40a5b7e58": {
+      "id": "action_d458f7eff8454d0db01031e40a5b7e58",
+      "type": "action",
+      "actionType": "SIGNOUT_ACCOUNT",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [
+            "Email"
+          ],
+          "recipients": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "iamTenants": [
+          "AAD"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_2b6f2956c5924f23b0ca46f8aa2ef30c"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_82e403997efc48b89ee9eb28ced5ed51"
+          }
+        ]
+      }
+    },
+    "action_82e403997efc48b89ee9eb28ced5ed51": {
+      "id": "action_82e403997efc48b89ee9eb28ced5ed51",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_d458f7eff8454d0db01031e40a5b7e58"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}
