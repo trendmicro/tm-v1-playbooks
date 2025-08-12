@@ -1,0 +1,297 @@
+{
+  "name": "(tpl) Account Response",
+  "description": "Sends notifications and mitigates accounts with account configuration risks, such as weak authentication and excessive privileges",
+  "type": "SYSTEM_CONFIGURATION",
+  "category": "ATTACK_SURFACE_RISK_MANAGEMENT",
+  "source_id": "TM_0009",
+  "workflow": {
+    "trigger_3e0f27ff171e4c0893ba185d32d52b13": {
+      "id": "trigger_3e0f27ff171e4c0893ba185d32d52b13",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "scheduled",
+        "scheduled": {
+          "schedule_type": "daily",
+          "time": "19:00",
+          "hour": 19,
+          "minute": 0,
+          "timezone": "Etc/UTC"
+        }
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_ea79c4e632e74221afd5e5e5e3acf0b7"
+          },
+          {
+            "id": "target_c5ba73f751c2405196afe3f821677d6d"
+          }
+        ]
+      }
+    },
+    "target_ea79c4e632e74221afd5e5e5e3acf0b7": {
+      "id": "target_ea79c4e632e74221afd5e5e5e3acf0b7",
+      "type": "target",
+      "actionType": "ACCOUNT_EXPOSURE_WEAK_AUTH",
+      "properties": {
+        "serviceType": "all",
+        "userType": "hpu",
+        "policy": "all"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_3e0f27ff171e4c0893ba185d32d52b13"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_9888eca300e14b9dbca7577c43f446f8"
+          },
+          {
+            "id": "condition_0b60ee54eecd4ecab9871aa1eae60a42"
+          }
+        ]
+      }
+    },
+    "action_9888eca300e14b9dbca7577c43f446f8": {
+      "id": "action_9888eca300e14b9dbca7577c43f446f8",
+      "type": "action",
+      "actionType": "CREATE_CSV",
+      "properties": {},
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_ea79c4e632e74221afd5e5e5e3acf0b7"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_56a508d8d0504873b1ed8a27d1af12ac"
+          }
+        ]
+      }
+    },
+    "action_56a508d8d0504873b1ed8a27d1af12ac": {
+      "id": "action_56a508d8d0504873b1ed8a27d1af12ac",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks | Playbook: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_9888eca300e14b9dbca7577c43f446f8"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "condition_0b60ee54eecd4ecab9871aa1eae60a42": {
+      "id": "condition_0b60ee54eecd4ecab9871aa1eae60a42",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_ea79c4e632e74221afd5e5e5e3acf0b7",
+              "logicGate": "and",
+              "operands": [
+                {
+                  "operator": "in",
+                  "key": "services.id",
+                  "value": [
+                    "DS-V1-02"
+                  ]
+                },
+                {
+                  "operator": "in",
+                  "key": "policies",
+                  "value": [
+                    "EXP-A-001-C-001",
+                    "EXP-A-001-C-002",
+                    "EXP-A-001-C-003",
+                    "EXP-A-001-C-004",
+                    "EXP-A-001-C-005"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_ea79c4e632e74221afd5e5e5e3acf0b7"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_4b0a1cdad3b742009f8a71628d08c858"
+          }
+        ]
+      }
+    },
+    "action_4b0a1cdad3b742009f8a71628d08c858": {
+      "id": "action_4b0a1cdad3b742009f8a71628d08c858",
+      "type": "action",
+      "actionType": "SIGNOUT_ACCOUNT",
+      "properties": {
+        "iamTenants": [
+          "AAD"
+        ],
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [
+            "Email"
+          ],
+          "recipients": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_0b60ee54eecd4ecab9871aa1eae60a42"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_713b948560a84b1d9e57ca040ea845cf"
+          }
+        ]
+      }
+    },
+    "action_713b948560a84b1d9e57ca040ea845cf": {
+      "id": "action_713b948560a84b1d9e57ca040ea845cf",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks | Playbook: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_4b0a1cdad3b742009f8a71628d08c858"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "target_c5ba73f751c2405196afe3f821677d6d": {
+      "id": "target_c5ba73f751c2405196afe3f821677d6d",
+      "type": "target",
+      "actionType": "ACCOUNT_EXPOSURE_SERVICE_ACCOUNT_MISCONFIG",
+      "properties": {},
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_3e0f27ff171e4c0893ba185d32d52b13"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_739b5c7860ad4cd99db40789fe07c900"
+          }
+        ]
+      }
+    },
+    "condition_739b5c7860ad4cd99db40789fe07c900": {
+      "id": "condition_739b5c7860ad4cd99db40789fe07c900",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_c5ba73f751c2405196afe3f821677d6d",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "in",
+                  "key": "permissions.appRoleId",
+                  "value": [
+                    "19dbc75e-c2e2-444c-a770-ec69d8559fc7",
+                    "06b708a9-e830-4db3-a914-8e69da51d44f",
+                    "1bfefb4e-e0b5-418b-a88f-73c46d2cc8e9",
+                    "7e05723c-0bb0-42da-be95-ae9f08a6e53c",
+                    "75359482-378d-4052-8f01-80520e7db3cd",
+                    "6931bccd-447a-43d1-b442-00a195474933",
+                    "656f6061-f9fe-4807-9708-6a2e0934df76"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_c5ba73f751c2405196afe3f821677d6d"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_3d9d4c4c3c774563b23227f1c558e681"
+          }
+        ]
+      }
+    },
+    "action_3d9d4c4c3c774563b23227f1c558e681": {
+      "id": "action_3d9d4c4c3c774563b23227f1c558e681",
+      "type": "action",
+      "actionType": "CREATE_CSV",
+      "properties": {},
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_739b5c7860ad4cd99db40789fe07c900"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_e1c59b406d314f4a8e8d5985d5db929f"
+          }
+        ]
+      }
+    },
+    "action_e1c59b406d314f4a8e8d5985d5db929f": {
+      "id": "action_e1c59b406d314f4a8e8d5985d5db929f",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks | Playbook: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_3d9d4c4c3c774563b23227f1c558e681"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}

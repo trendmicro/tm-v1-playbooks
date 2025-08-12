@@ -1,0 +1,395 @@
+{
+  "name": "(tpl) Workbench Insight Progression Update",
+  "description": "Provides stakeholders with timely updates on the progression of Workbench insights",
+  "type": "XDR_DETECTION",
+  "category": "XDR",
+  "source_id": "TM_0018",
+  "workflow": {
+    "trigger_1762637667c8407895c8139455bcf106": {
+      "id": "trigger_1762637667c8407895c8139455bcf106",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "workbench_alert"
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_5e136c201ea44c9995e2c725e462bdff"
+          }
+        ]
+      }
+    },
+    "target_5e136c201ea44c9995e2c725e462bdff": {
+      "id": "target_5e136c201ea44c9995e2c725e462bdff",
+      "type": "target",
+      "actionType": "WORKBENCH_INSIGHT",
+      "properties": {
+        "alertSeverities": [
+          "critical",
+          "high",
+          "medium"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_1762637667c8407895c8139455bcf106"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_223941f3f9ce4247a6571617723909b6"
+          },
+          {
+            "id": "condition_f2c874c60ef44f5ba79a9544be94a47e"
+          },
+          {
+            "id": "condition_4b26b954839041a5bb0b3e7b704100c6"
+          },
+          {
+            "id": "condition_a99f27191b5340709bd128b9353e2e48"
+          }
+        ]
+      }
+    },
+    "condition_223941f3f9ce4247a6571617723909b6": {
+      "id": "condition_223941f3f9ce4247a6571617723909b6",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_5e136c201ea44c9995e2c725e462bdff",
+              "logicGate": "and",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "score",
+                  "value": 76,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "le",
+                  "key": "score",
+                  "value": 100,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "eq",
+                  "key": "case_id",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_5e136c201ea44c9995e2c725e462bdff"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_a93a2231183b47df9414f6f7bd9a893d"
+          }
+        ]
+      }
+    },
+    "action_a93a2231183b47df9414f6f7bd9a893d": {
+      "id": "action_a93a2231183b47df9414f6f7bd9a893d",
+      "type": "action",
+      "actionType": "OPEN_NEW_INSIGHT_CASE",
+      "properties": {
+        "enableWorkbenchInsightSummary": true,
+        "enableImportCaseFromCorrelatedAlerts": true,
+        "casePriority": "P0",
+        "caseOwnerAccountIds": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_223941f3f9ce4247a6571617723909b6"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_e87ae7c60b26494d85ee9e1234d1f3bd"
+          }
+        ]
+      }
+    },
+    "action_e87ae7c60b26494d85ee9e1234d1f3bd": {
+      "id": "action_e87ae7c60b26494d85ee9e1234d1f3bd",
+      "type": "action",
+      "actionType": "SEND_INSIGHT_INFORMATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "enableBasicInsightInformationInEmailContent": true,
+        "enableInsightSummary": true,
+        "enableAlertList": true,
+        "enableImpactScopeList": true,
+        "enableHighlightedObjectList": true,
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_a93a2231183b47df9414f6f7bd9a893d"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "condition_f2c874c60ef44f5ba79a9544be94a47e": {
+      "id": "condition_f2c874c60ef44f5ba79a9544be94a47e",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_5e136c201ea44c9995e2c725e462bdff",
+              "logicGate": "and",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "score",
+                  "value": 51,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "le",
+                  "key": "score",
+                  "value": 75,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "eq",
+                  "key": "case_id",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_5e136c201ea44c9995e2c725e462bdff"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_d4220ffeef49410f9e0cb9b95f1d395c"
+          }
+        ]
+      }
+    },
+    "action_d4220ffeef49410f9e0cb9b95f1d395c": {
+      "id": "action_d4220ffeef49410f9e0cb9b95f1d395c",
+      "type": "action",
+      "actionType": "OPEN_NEW_INSIGHT_CASE",
+      "properties": {
+        "enableWorkbenchInsightSummary": true,
+        "enableImportCaseFromCorrelatedAlerts": true,
+        "casePriority": "P1",
+        "caseOwnerAccountIds": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_f2c874c60ef44f5ba79a9544be94a47e"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_76c0fcac93a34117881e947d948ee63e"
+          }
+        ]
+      }
+    },
+    "action_76c0fcac93a34117881e947d948ee63e": {
+      "id": "action_76c0fcac93a34117881e947d948ee63e",
+      "type": "action",
+      "actionType": "SEND_INSIGHT_INFORMATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "enableBasicInsightInformationInEmailContent": true,
+        "enableInsightSummary": true,
+        "enableAlertList": true,
+        "enableImpactScopeList": true,
+        "enableHighlightedObjectList": true,
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_d4220ffeef49410f9e0cb9b95f1d395c"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "condition_4b26b954839041a5bb0b3e7b704100c6": {
+      "id": "condition_4b26b954839041a5bb0b3e7b704100c6",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_5e136c201ea44c9995e2c725e462bdff",
+              "logicGate": "and",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "score",
+                  "value": 26,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "le",
+                  "key": "score",
+                  "value": 50,
+                  "uiOptionType": "FIXED_RANGE"
+                },
+                {
+                  "operator": "eq",
+                  "key": "case_id",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_5e136c201ea44c9995e2c725e462bdff"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_523908b2f35f4425821124b096bfc294"
+          }
+        ]
+      }
+    },
+    "action_523908b2f35f4425821124b096bfc294": {
+      "id": "action_523908b2f35f4425821124b096bfc294",
+      "type": "action",
+      "actionType": "OPEN_NEW_INSIGHT_CASE",
+      "properties": {
+        "enableWorkbenchInsightSummary": true,
+        "enableImportCaseFromCorrelatedAlerts": true,
+        "casePriority": "P2",
+        "caseOwnerAccountIds": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_4b26b954839041a5bb0b3e7b704100c6"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_6e8ed8db2007423b98ed4b3e0261d336"
+          }
+        ]
+      }
+    },
+    "action_6e8ed8db2007423b98ed4b3e0261d336": {
+      "id": "action_6e8ed8db2007423b98ed4b3e0261d336",
+      "type": "action",
+      "actionType": "SEND_INSIGHT_INFORMATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "enableBasicInsightInformationInEmailContent": true,
+        "enableInsightSummary": true,
+        "enableAlertList": true,
+        "enableImpactScopeList": true,
+        "enableHighlightedObjectList": true,
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_523908b2f35f4425821124b096bfc294"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "condition_a99f27191b5340709bd128b9353e2e48": {
+      "id": "condition_a99f27191b5340709bd128b9353e2e48",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_5e136c201ea44c9995e2c725e462bdff",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "neq",
+                  "key": "case_id",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_5e136c201ea44c9995e2c725e462bdff"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_ba1b11c8a8844de7aa7c70016a59ff9b"
+          }
+        ]
+      }
+    },
+    "action_ba1b11c8a8844de7aa7c70016a59ff9b": {
+      "id": "action_ba1b11c8a8844de7aa7c70016a59ff9b",
+      "type": "action",
+      "actionType": "SEND_INSIGHT_INFORMATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "enableBasicInsightInformationInEmailContent": true,
+        "enableInsightSummary": true,
+        "enableAlertList": true,
+        "enableImpactScopeList": true,
+        "enableHighlightedObjectList": true,
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_a99f27191b5340709bd128b9353e2e48"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}

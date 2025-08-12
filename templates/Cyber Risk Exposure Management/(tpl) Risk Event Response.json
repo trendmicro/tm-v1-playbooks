@@ -1,0 +1,240 @@
+{
+  "name": "(tpl) Risk Event Response",
+  "description": "Sends notifications and takes actions automatically in response to new or ongoing risk events",
+  "type": "RISK_EVENTS",
+  "category": "ATTACK_SURFACE_RISK_MANAGEMENT",
+  "source_id": "TM_0014",
+  "workflow": {
+    "trigger_711b1a9597fe461e90c6c81f27e0003e": {
+      "id": "trigger_711b1a9597fe461e90c6c81f27e0003e",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "scheduled",
+        "scheduled": {
+          "schedule_type": "hourly",
+          "timezone": "Etc/UTC",
+          "minute": 0
+        }
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_d6b02edaf0554e16b306352a0f9ab2f2"
+          },
+          {
+            "id": "target_fbdce7525aef442881ee23641bb173a3"
+          }
+        ]
+      }
+    },
+    "target_d6b02edaf0554e16b306352a0f9ab2f2": {
+      "id": "target_d6b02edaf0554e16b306352a0f9ab2f2",
+      "type": "target",
+      "actionType": "RISK_EVENT_ACCOUNT_COMPROMISED",
+      "properties": {
+        "riskEvents": [],
+        "riskLevel": [
+          "High",
+          "Medium"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_711b1a9597fe461e90c6c81f27e0003e"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_029eb09594514751a1d555f83c7a2dfb"
+          },
+          {
+            "id": "action_d801b2c6c3c14d1ea42583dcb9f61e69"
+          }
+        ]
+      }
+    },
+    "action_029eb09594514751a1d555f83c7a2dfb": {
+      "id": "action_029eb09594514751a1d555f83c7a2dfb",
+      "type": "action",
+      "actionType": "RISK_EVENT_ACTION",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [
+            "Email"
+          ],
+          "recipients": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "responseActions": {
+          "account": [
+            "force_signout_account"
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_d6b02edaf0554e16b306352a0f9ab2f2"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_fbb3c50f8eda491e8b2a38bb47779dac"
+          }
+        ]
+      }
+    },
+    "action_fbb3c50f8eda491e8b2a38bb47779dac": {
+      "id": "action_fbb3c50f8eda491e8b2a38bb47779dac",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_029eb09594514751a1d555f83c7a2dfb"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "action_d801b2c6c3c14d1ea42583dcb9f61e69": {
+      "id": "action_d801b2c6c3c14d1ea42583dcb9f61e69",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_d6b02edaf0554e16b306352a0f9ab2f2"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "target_fbdce7525aef442881ee23641bb173a3": {
+      "id": "target_fbdce7525aef442881ee23641bb173a3",
+      "type": "target",
+      "actionType": "RISK_EVENT_THREAT_DETECTION",
+      "properties": {
+        "riskEvents": [],
+        "riskLevel": [
+          "High",
+          "Medium"
+        ],
+        "assetTypes": [
+          "DEVICE",
+          "ACCOUNT",
+          "CLOUD_ASSET"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_711b1a9597fe461e90c6c81f27e0003e"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_0bc62e3e9dfa4e7cbf7a0c6f72057aba"
+          },
+          {
+            "id": "action_0c5aa176d2e149b28888b31d8f92bfd9"
+          }
+        ]
+      }
+    },
+    "action_0bc62e3e9dfa4e7cbf7a0c6f72057aba": {
+      "id": "action_0bc62e3e9dfa4e7cbf7a0c6f72057aba",
+      "type": "action",
+      "actionType": "RISK_EVENT_ACTION",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [
+            "Email"
+          ],
+          "recipients": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "responseActions": {
+          "endpoint": [
+            "isolate_endpoint"
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_fbdce7525aef442881ee23641bb173a3"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_9c2679277c8349b1900d114c499ee46d"
+          }
+        ]
+      }
+    },
+    "action_9c2679277c8349b1900d114c499ee46d": {
+      "id": "action_9c2679277c8349b1900d114c499ee46d",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_0bc62e3e9dfa4e7cbf7a0c6f72057aba"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "action_0c5aa176d2e149b28888b31d8f92bfd9": {
+      "id": "action_0c5aa176d2e149b28888b31d8f92bfd9",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_fbdce7525aef442881ee23641bb173a3"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}

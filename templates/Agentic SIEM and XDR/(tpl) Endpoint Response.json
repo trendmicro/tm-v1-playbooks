@@ -1,0 +1,217 @@
+{
+  "name": "(tpl) Endpoint Response",
+  "description": "Runs custom scripts on endpoints or isolates compromised endpoints during an investigation",
+  "type": "GENERAL",
+  "category": "XDR",
+  "source_id": "TM_0013",
+  "workflow": {
+    "trigger_38faf8c2d00b44ff9c60713ae5843d57": {
+      "id": "trigger_38faf8c2d00b44ff9c60713ae5843d57",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "manual"
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_53a1c531873440c0b4b953e22c42df9f"
+          }
+        ]
+      }
+    },
+    "target_53a1c531873440c0b4b953e22c42df9f": {
+      "id": "target_53a1c531873440c0b4b953e22c42df9f",
+      "type": "target",
+      "actionType": "SEARCH_ENDPOINTS",
+      "properties": {
+        "deviceSearchType": "hostName",
+        "devicePlatforms": [
+          "Linux",
+          "MacOS",
+          "Windows"
+        ],
+        "deviceTypes": [
+          "desktop",
+          "server"
+        ],
+        "hostnames": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_38faf8c2d00b44ff9c60713ae5843d57"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_19d2433c18584d978a4500f6fb6ec311"
+          },
+          {
+            "id": "condition_83924ea0391448eab6e8c60437385112"
+          }
+        ]
+      }
+    },
+    "condition_19d2433c18584d978a4500f6fb6ec311": {
+      "id": "condition_19d2433c18584d978a4500f6fb6ec311",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_53a1c531873440c0b4b953e22c42df9f",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "in",
+                  "key": "platform",
+                  "value": [
+                    "Windows"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_53a1c531873440c0b4b953e22c42df9f"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_37baecccfc57457ca45a1c8a61793954"
+          }
+        ]
+      }
+    },
+    "action_37baecccfc57457ca45a1c8a61793954": {
+      "id": "action_37baecccfc57457ca45a1c8a61793954",
+      "type": "action",
+      "actionType": "RUN_CUSTOM_SCRIPT",
+      "properties": {
+        "scriptParameter": "",
+        "scriptFileType": "powershell",
+        "scriptName": "test.ps1"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_19d2433c18584d978a4500f6fb6ec311"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_bb779ec22c974d9f8faac76ba418a648"
+          }
+        ]
+      }
+    },
+    "action_bb779ec22c974d9f8faac76ba418a648": {
+      "id": "action_bb779ec22c974d9f8faac76ba418a648",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_37baecccfc57457ca45a1c8a61793954"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "condition_83924ea0391448eab6e8c60437385112": {
+      "id": "condition_83924ea0391448eab6e8c60437385112",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_53a1c531873440c0b4b953e22c42df9f",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "in",
+                  "key": "platform",
+                  "value": [
+                    "Linux",
+                    "MacOS"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_53a1c531873440c0b4b953e22c42df9f"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_7441e3a6a13a47c1924c41855ff8b74a"
+          }
+        ]
+      }
+    },
+    "action_7441e3a6a13a47c1924c41855ff8b74a": {
+      "id": "action_7441e3a6a13a47c1924c41855ff8b74a",
+      "type": "action",
+      "actionType": "RUN_CUSTOM_SCRIPT",
+      "properties": {
+        "scriptParameter": "",
+        "scriptFileType": "bash",
+        "scriptName": "test.sh"
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_83924ea0391448eab6e8c60437385112"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_30948f6b9a2b4f3fb8cc754d07936423"
+          }
+        ]
+      }
+    },
+    "action_30948f6b9a2b4f3fb8cc754d07936423": {
+      "id": "action_30948f6b9a2b4f3fb8cc754d07936423",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_7441e3a6a13a47c1924c41855ff8b74a"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}

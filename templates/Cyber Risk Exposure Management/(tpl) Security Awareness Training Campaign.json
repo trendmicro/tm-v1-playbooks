@@ -1,0 +1,404 @@
+{
+  "name": "(tpl) Security Awareness Training Campaign",
+  "description": "Creates security awareness training campaigns for user accounts targeted by account compromise and XDR detection risk events",
+  "type": "RISK_EVENTS",
+  "category": "ATTACK_SURFACE_RISK_MANAGEMENT",
+  "source_id": "TM_0017",
+  "workflow": {
+    "trigger_9abd960639004070915946791c80f6c6": {
+      "id": "trigger_9abd960639004070915946791c80f6c6",
+      "type": "trigger",
+      "actionType": "TRIGGER",
+      "properties": {
+        "trigger_type": "scheduled",
+        "scheduled": {
+          "schedule_type": "monthly",
+          "timezone": "Etc/UTC",
+          "time": "09:00",
+          "hour": 9,
+          "minute": 0,
+          "nth_week": "1st",
+          "week": "mon",
+          "day": "1st mon"
+        }
+      },
+      "flows": {
+        "incoming": [],
+        "outgoing": [
+          {
+            "id": "target_ff6bc94b6f07434d8b0effe7f5bd0464"
+          },
+          {
+            "id": "target_15f87f57bdd541838756bf53e73177a8"
+          },
+          {
+            "id": "target_0d0274fe59b34c1e81f3c93311861470"
+          }
+        ]
+      }
+    },
+    "target_ff6bc94b6f07434d8b0effe7f5bd0464": {
+      "id": "target_ff6bc94b6f07434d8b0effe7f5bd0464",
+      "type": "target",
+      "actionType": "RISK_EVENT_ACCOUNT_COMPROMISED",
+      "properties": {
+        "riskEvents": [
+          "AC01-016",
+          "AC01-017",
+          "AC01-058",
+          "AC02-001",
+          "WD01-175"
+        ],
+        "riskLevel": [
+          "High"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_9abd960639004070915946791c80f6c6"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_9fb6efb8b8f34b96a3467091302bb4af"
+          }
+        ]
+      }
+    },
+    "condition_9fb6efb8b8f34b96a3467091302bb4af": {
+      "id": "condition_9fb6efb8b8f34b96a3467091302bb4af",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_ff6bc94b6f07434d8b0effe7f5bd0464",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "riskScore",
+                  "value": 71
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_ff6bc94b6f07434d8b0effe7f5bd0464"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_a4eac41e454348299243efda6b76b2d2"
+          }
+        ]
+      }
+    },
+    "action_a4eac41e454348299243efda6b76b2d2": {
+      "id": "action_a4eac41e454348299243efda6b76b2d2",
+      "type": "action",
+      "actionType": "SAA_ACTION",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "course_list": [],
+        "category_ids": [
+          "password_protection"
+        ],
+        "duration": 14
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_9fb6efb8b8f34b96a3467091302bb4af"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_6a77701997464f07a02297e293a14290"
+          }
+        ]
+      }
+    },
+    "action_6a77701997464f07a02297e293a14290": {
+      "id": "action_6a77701997464f07a02297e293a14290",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_a4eac41e454348299243efda6b76b2d2"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "target_15f87f57bdd541838756bf53e73177a8": {
+      "id": "target_15f87f57bdd541838756bf53e73177a8",
+      "type": "target",
+      "actionType": "RISK_EVENT_ACCOUNT_COMPROMISED",
+      "properties": {
+        "riskEvents": [
+          "WD01-025",
+          "WD01-026",
+          "WD01-027",
+          "WD01-028",
+          "WD01-029",
+          "WD01-030",
+          "WD01-031",
+          "WD01-032",
+          "WD01-033",
+          "WD01-075",
+          "WD01-077",
+          "WD01-151",
+          "WD01-153",
+          "WD01-154",
+          "WD01-155",
+          "WD01-288"
+        ],
+        "riskLevel": [
+          "High",
+          "Medium"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_9abd960639004070915946791c80f6c6"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_db5542f131a645cfb96fa995462d2fd3"
+          }
+        ]
+      }
+    },
+    "condition_db5542f131a645cfb96fa995462d2fd3": {
+      "id": "condition_db5542f131a645cfb96fa995462d2fd3",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_15f87f57bdd541838756bf53e73177a8",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "riskScore",
+                  "value": 50
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_15f87f57bdd541838756bf53e73177a8"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_90633872f40d4053ae423cdc674af017"
+          }
+        ]
+      }
+    },
+    "action_90633872f40d4053ae423cdc674af017": {
+      "id": "action_90633872f40d4053ae423cdc674af017",
+      "type": "action",
+      "actionType": "SAA_ACTION",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "course_list": [],
+        "category_ids": [
+          "phishing"
+        ],
+        "duration": 14
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_db5542f131a645cfb96fa995462d2fd3"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_0c1d9d4c792d4ffaa7db64c0c271d81f"
+          }
+        ]
+      }
+    },
+    "action_0c1d9d4c792d4ffaa7db64c0c271d81f": {
+      "id": "action_0c1d9d4c792d4ffaa7db64c0c271d81f",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_90633872f40d4053ae423cdc674af017"
+          }
+        ],
+        "outgoing": []
+      }
+    },
+    "target_0d0274fe59b34c1e81f3c93311861470": {
+      "id": "target_0d0274fe59b34c1e81f3c93311861470",
+      "type": "target",
+      "actionType": "RISK_EVENT_XDR_DETECTION",
+      "properties": {
+        "riskEvents": [
+          "WD01-038",
+          "WD01-048",
+          "WD01-049",
+          "WD01-051",
+          "WD01-052",
+          "WD01-081",
+          "WD01-112",
+          "WD01-124",
+          "WD01-279",
+          "WD01-332"
+        ],
+        "riskLevel": [
+          "High",
+          "Medium"
+        ]
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "trigger_9abd960639004070915946791c80f6c6"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "condition_16628f48102948a88bbbd43321ab0207"
+          }
+        ]
+      }
+    },
+    "condition_16628f48102948a88bbbd43321ab0207": {
+      "id": "condition_16628f48102948a88bbbd43321ab0207",
+      "type": "condition",
+      "actionType": "CONDITION",
+      "properties": {
+        "condition": {
+          "logicGate": "buf",
+          "operands": [
+            {
+              "source": "target_0d0274fe59b34c1e81f3c93311861470",
+              "logicGate": "buf",
+              "operands": [
+                {
+                  "operator": "ge",
+                  "key": "riskScore",
+                  "value": 50
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "target_0d0274fe59b34c1e81f3c93311861470"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_bd905417a444437fb372948e8fe02f6c"
+          }
+        ]
+      }
+    },
+    "action_bd905417a444437fb372948e8fe02f6c": {
+      "id": "action_bd905417a444437fb372948e8fe02f6c",
+      "type": "action",
+      "actionType": "SAA_ACTION",
+      "properties": {
+        "approval": {
+          "subjectPrefix": "",
+          "notificationMethods": [],
+          "subject": " Security Playbooks: %playbookName%",
+          "message": ""
+        },
+        "approvalNeeded": true,
+        "course_list": [],
+        "category_ids": [
+          "malware"
+        ],
+        "duration": 14
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "condition_16628f48102948a88bbbd43321ab0207"
+          }
+        ],
+        "outgoing": [
+          {
+            "id": "action_8053457a86784424aa6679bb2d7e258b"
+          }
+        ]
+      }
+    },
+    "action_8053457a86784424aa6679bb2d7e258b": {
+      "id": "action_8053457a86784424aa6679bb2d7e258b",
+      "type": "action",
+      "actionType": "NOTIFICATION_EMAIL",
+      "properties": {
+        "subjectPrefix": "",
+        "recipients": [],
+        "subject": " Security Playbooks: %playbookName%",
+        "message": "",
+        "messageTokens": []
+      },
+      "flows": {
+        "incoming": [
+          {
+            "id": "action_bd905417a444437fb372948e8fe02f6c"
+          }
+        ],
+        "outgoing": []
+      }
+    }
+  }
+}
